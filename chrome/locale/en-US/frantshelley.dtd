@@ -1,0 +1,20 @@
+<!ENTITY eraseImage.label   "Erase Image">
+<!ENTITY eraseImage.accesskey  "E">
+<!ENTITY eraseImage.setitle "The Erase Image is in the context menu">
+<!ENTITY eraseImage.tooltiptext "appendage item of context menu of images">
+<!ENTITY openLinkCmdInSandbox.label   "Open Link in Sandbox">
+<!ENTITY openLinkCmdInSandbox.accesskey  "S">
+<!ENTITY openLinkInSandbox.setitle "The Open Link in Sandbox is in the context menu">
+<!ENTITY openLinkInSandbox.tooltiptext "appendage item of context menu of links">
+<!ENTITY hideSendLinkImage.setitle "The Send item of the context menu is hidden">
+<!ENTITY hideSendLinkImage.tooltiptext "send item for links and images is hidden">
+<!ENTITY mainmenuShell.label   "Shelley">
+<!ENTITY mainmenuShell.accesskey  "S">
+<!ENTITY menuJavascript.label   "Allow Javascript">
+<!ENTITY menuJavascript.accesskey  "J">
+<!ENTITY menuRedirects.label   "Allow Redirects">
+<!ENTITY menuRedirects.accesskey  "R">
+<!ENTITY menuPlugins.label   "Allow Plugins">
+<!ENTITY menuPlugins.accesskey  "P">
+<!ENTITY menuSubframes.label   "Allow Iframes">
+<!ENTITY menuSubframes.accesskey  "f">

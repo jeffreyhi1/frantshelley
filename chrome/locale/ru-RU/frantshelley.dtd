@@ -1,0 +1,20 @@
+<!ENTITY eraseImage.label   "Удалить изображение">
+<!ENTITY eraseImage.accesskey  "У">
+<!ENTITY eraseImage.setitle "В меню будет пункт Удалить изображение.">
+<!ENTITY eraseImage.tooltiptext "расширение контекстного меню изображений">
+<!ENTITY openLinkCmdInSandbox.label   "Открыть в песочнице">
+<!ENTITY openLinkCmdInSandbox.accesskey  "п">
+<!ENTITY openLinkInSandbox.setitle "В меню будет пункт Открыть в песочнице">
+<!ENTITY openLinkInSandbox.tooltiptext "расширение контекстного меню ссылок">
+<!ENTITY hideSendLinkImage.setitle "В меню не будет пункта Отправить">
+<!ENTITY hideSendLinkImage.tooltiptext "пункта Отправить для изображений и ссылок не будет">
+<!ENTITY mainmenuShell.label   "Шелли">
+<!ENTITY mainmenuShell.accesskey  "Ш">
+<!ENTITY menuJavascript.label   "Исполнять скрипты">
+<!ENTITY menuJavascript.accesskey  "с">
+<!ENTITY menuRedirects.label   "Позволять редирект">
+<!ENTITY menuRedirects.accesskey  "р">
+<!ENTITY menuPlugins.label   "Стороннии библиотеки">
+<!ENTITY menuPlugins.accesskey  "б">
+<!ENTITY menuSubframes.label   "Загружать сабфреймы">
+<!ENTITY menuSubframes.accesskey  "ф">

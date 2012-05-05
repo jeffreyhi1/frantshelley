@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE overlay SYSTEM "chrome://frantshelley/locale/frantshelley.dtd">
+
+<overlay id="shelley-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script src="chrome://frantshelley/content/frantshelley.js" type="application/javascript" />
+
+<script type="application/javascript">
+ function popupShelley()
+ {
+    var thedocshell = null;
+    try {
+        thedocshell = content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                     .getInterface(Components.interfaces.nsIWebNavigation)
+                     .QueryInterface(Components.interfaces.nsIDocShell);
+	if(thedocshell)
+	{
+	    var thelement;
+	    for each (let theval in menuitem2shell)
+	    {
+		thelement = document.getElementById(theval);
+		thelement.removeAttribute("disabled");
+		if(thedocshell[thelement.value])
+			thelement.setAttribute("checked", "true")
+		    else thelement.removeAttribute("checked");
+	    }
+//	dump("_dvk_dbg_, .nsIDocShell:\t"); dump(thedocshell[thattr]); dump("\n");
+	    if(thedocshell.canExecuteScripts != thedocshell.allowJavascript)
+	    {
+		thelement = document.getElementById("docShelley-javascript");
+		if(thedocshell.canExecuteScripts)
+			thelement.setAttribute("checked", "true")
+		    else thelement.removeAttribute("checked");
+		thelement.setAttribute("disabled", "true");
+	    }
+	}
+	else
+	    for each (let theval in menuitem2shell)
+		document.getElementById(theval).setAttribute("disabled", "true");
+    }
+    catch (e) {
+	thedocshell = null;
+        Components.utils.reportError(e)
+    }
+    return thedocshell;
+ }
+    
+ function checkedShelley(anobj)
+ {
+    if(gFrantShelley)
+	gFrantShelley[anobj.value] = !(anobj.hasAttribute('checked'));
+ }
+</script>
+
+  <menupopup id="contentAreaContextMenu" >
+        <menuitem id="context-removeimage" label="&eraseImage.label;" hidden="true"
+                  insertafter="context-setDesktopBackground" accesskey="&eraseImage.accesskey;"
+                  oncommand="gContextMenu.target.parentNode.removeChild(gContextMenu.target);" />
+        <menuitem id="context-openlinksandbox" label="&openLinkCmdInSandbox.label;" hidden="true"
+                  insertafter="context-openlink" accesskey="&openLinkCmdInSandbox.accesskey;"
+                  oncommand="frantShelley.sandboxLink(gContextMenu);" />
+        <menuitem id="context-setDesktopBackground" disabled="true" />
+  </menupopup>
+
+  <menubar id="main-menubar">
+	<menu id="docShelley-menu" label="&mainmenuShell.label;" accesskey="&mainmenuShell.accesskey;"
+              flags="dont-test-empty" insertafter="view-menu" >
+	    <menupopup onpopupshowing="gFrantShelley = popupShelley();" onpopuphiding="gFrantShelley = null;">
+                <menuitem id="docShelley-javascript" type="checkbox" autocheck="false"
+			label="&menuJavascript.label;" value="allowJavascript"
+			accesskey="&menuJavascript.accesskey;" oncommand="checkedShelley(this);" />
+		
+                <menuitem id="docShelley-redirects" type="checkbox" autocheck="false"
+			  label="&menuRedirects.label;" value="allowMetaRedirects" 
+			accesskey="&menuRedirects.accesskey;" oncommand="checkedShelley(this);" />
+		
+                <menuitem id="docShelley-plugins" type="checkbox" autocheck="false"
+			  label="&menuPlugins.label;" value="allowPlugins"
+			accesskey="&menuPlugins.accesskey;" oncommand="checkedShelley(this);" />
+		
+                <menuitem id="docShelley-subframes" type="checkbox" autocheck="false"
+			  label="&menuSubframes.label;" value="allowSubframes"
+			accesskey="&menuSubframes.accesskey;" oncommand="checkedShelley(this);" />
+		<menuseparator />
+            </menupopup>
+        </menu>
+  </menubar>
+</overlay>
