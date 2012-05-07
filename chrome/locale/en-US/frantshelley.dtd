@@ -18,3 +18,7 @@
 <!ENTITY menuPlugins.accesskey  "P">
 <!ENTITY menuSubframes.label   "Allow Iframes">
 <!ENTITY menuSubframes.accesskey  "f">
+<!ENTITY menuAllowall.label   "Allow All">
+<!ENTITY menuAllowall.accesskey  "A">
+<!ENTITY menuDisallow.label   "Disallow All">
+<!ENTITY menuDisallow.accesskey  "D">

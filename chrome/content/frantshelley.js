@@ -3,30 +3,27 @@
 
 var gFrantShelley = null;
 
+const someSends = [ "context-sendimage", "context-sendlink", "context-sendpage" ]
+
 // depend on : document, gContextMenu
 const pref2fire = {
-   
+
    'removeImage' : function (e) { // ..frantshelley.removeImage
          document.getElementById("context-removeimage").hidden =
                      !(gContextMenu.onImage && gContextMenu.onLoadedImage);
          document.getElementById("context-setDesktopBackground").hidden = true;
    },
-   
+
    'sandboxLink' : function (e) { // ..frantshelley.sandboxLink
          document.getElementById("context-openlinksandbox").hidden = !(gContextMenu.onLink)
    },
 
    'hideSenditem' : function (e) { // ..frantshelley.hideSenditem
-         document.getElementById("context-sendimage").hidden = true;
-         document.getElementById("context-sendlink").hidden = true;
+      for each (let theval in someSends)
+          document.getElementById(theval).setAttribute("hidden", "true");
    }
 }
 // depend on : document, gContextMenu
-
-const pref2menuitem = {
-      'removeImage' : "context-removeimage",
-      'sandboxLink' : "context-openlinksandbox"
-   }
 
 const menuitem2shell = [ "docShelley-javascript", "docShelley-redirects",
                         "docShelley-subframes",  "docShelley-plugins"   ]
@@ -83,10 +80,14 @@ var frantShelley = {
    // this[theval] = this._branch.getBoolPref(theval);
       var thelement = document.getElementById("contentAreaContextMenu");
       if(thelement && (document.loadOverlay))
+      {
          for (let thattr in pref2fire)
-         if(this._branch.getBoolPref(thattr))
-            thelement.addEventListener("popupshowing", pref2fire[thattr]);
+            if(this._branch.getBoolPref(thattr))
+               thelement.addEventListener("popupshowing", pref2fire[thattr]);
             
+         if(this._branch.getBoolPref("hideSenditem"))
+            document.getElementById("Browser:SendLink").setAttribute("disabled", "true");
+      }      
       this._branch.addObserver("", this, false);
   },
 
@@ -100,12 +101,19 @@ var frantShelley = {
       try {
          
       if(this._branch.getBoolPref(adata))
-         thelement.addEventListener("popupshowing", pref2fire[adata]);
+         thelement.addEventListener("popupshowing", pref2fire[adata]);         
       else {
          thelement.removeEventListener("popupshowing", pref2fire[adata]);
-         if(thelement = pref2menuitem[adata])
-         document.getElementById(thelement).setAttribute("hidden", "true");
+         // indiscriminate set overlay items to hidden 
+         document.getElementById("context-removeimage").setAttribute("hidden", "true");
+         document.getElementById("context-openlinksandbox").setAttribute("hidden", "true");
       }
+      
+      // update always
+      if(this._branch.getBoolPref("hideSenditem"))
+         document.getElementById("Browser:SendLink").setAttribute("disabled", "true");
+      else
+         document.getElementById("Browser:SendLink").removeAttribute("disabled");
 
       } catch (e) {
         Components.utils.reportError(e)

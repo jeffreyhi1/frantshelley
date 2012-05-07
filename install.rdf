@@ -2,22 +2,22 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
       <em:id>frantshelley@code.google.com</em:id>
-      <em:version>0.1.0</em:version>
+      <em:version>0.1.1</em:version>
 
 		<em:localized>
 		  <Description>
 			<em:locale>ru-RU</em:locale>
 			<em:name>front Shell</em:name>
-<em:description>Это расширение предоставляет доступ к свойствам браузера, изменение которых будет действовать только для текущего экземпляра браузера.
-Жми и смотри на пункт меню Шелли .</em:description>
+<em:description>Это расширение предоставляет доступ к свойствам браузера через меню и все сделанные изменения будут действовать только для текущего экземпляра браузера.
+Жми и смотри на пункт меню Шелли. Значения перечисленных там свойств могут меняться и другими способами, без вмешательства пользователя, или могут быть недоступными.</em:description>
 		  </Description>
 		</em:localized>
 
       <em:name>front Shell</em:name>
-<em:description>This extension gives you access to the browser properties by menu, and the changes are not saved.
-You should use the item Shelley of the main menu.</em:description>
+<em:description>This extension gives you access to the properties by menu, and the browser does not save any changes after it was closed. 
+You should use the item Shelley of the main menu. These properties are set not only by the user activities, moreover they can be disabled to change by GUI.</em:description>
       <em:creator>&lt;kannoner@gmail.com&gt;</em:creator>
-        <!-- em:homepageURL http://code.google.com/p/knowredirect/ em:homepageURL -->
+        <em:homepageURL>https://code.google.com/p/frantshelley/</em:homepageURL>
       <em:type>2</em:type> <!-- type=extension --> 
       <!-- em:icon64URL chrome://reduceiframe/content/bug.png /em:icon64URL -->
 

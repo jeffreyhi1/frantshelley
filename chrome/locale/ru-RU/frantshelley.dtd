@@ -11,10 +11,14 @@
 <!ENTITY mainmenuShell.label   "Шелли">
 <!ENTITY mainmenuShell.accesskey  "Ш">
 <!ENTITY menuJavascript.label   "Исполнять скрипты">
-<!ENTITY menuJavascript.accesskey  "с">
+<!ENTITY menuJavascript.accesskey  "И">
 <!ENTITY menuRedirects.label   "Позволять редирект">
 <!ENTITY menuRedirects.accesskey  "р">
-<!ENTITY menuPlugins.label   "Стороннии библиотеки">
+<!ENTITY menuPlugins.label   "Подключать библиотеки">
 <!ENTITY menuPlugins.accesskey  "б">
 <!ENTITY menuSubframes.label   "Загружать сабфреймы">
 <!ENTITY menuSubframes.accesskey  "ф">
+<!ENTITY menuAllowall.label   "Отметить все">
+<!ENTITY menuAllowall.accesskey  "О">
+<!ENTITY menuDisallow.label   "Сбросить все">
+<!ENTITY menuDisallow.accesskey  "С">

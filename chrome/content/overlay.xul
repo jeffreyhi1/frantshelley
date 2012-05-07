@@ -6,27 +6,59 @@
 <script src="chrome://frantshelley/content/frantshelley.js" type="application/javascript" />
 
 <script type="application/javascript">
+    
+ function resetShell(newvalue)
+ {
+    if(gFrantShelley)
+    try {
+	var thelement;
+	for each (let theval in menuitem2shell)
+	{
+	    thelement = document.getElementById(theval);
+	    gFrantShelley[thelement.value] = newvalue;
+	}
+    }
+    catch (e) {
+        Components.utils.reportError(e)
+    }
+ }
+ 
  function popupShelley()
  {
-    var thedocshell = null;
+    var thedocshell = gFrantShelley = null;
     try {
+	var thyes = 0;
+	var theno = 0;
         thedocshell = content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                      .getInterface(Components.interfaces.nsIWebNavigation)
                      .QueryInterface(Components.interfaces.nsIDocShell);
 	if(thedocshell)
 	{
+	    thyes = theno = 4;
 	    var thelement;
 	    for each (let theval in menuitem2shell)
 	    {
 		thelement = document.getElementById(theval);
+    //thelement.oncommand = "gFrantShelley[this.value] = !(this.hasAttribute('checked'))";
 		thelement.removeAttribute("disabled");
-		if(thedocshell[thelement.value])
-			thelement.setAttribute("checked", "true")
-		    else thelement.removeAttribute("checked");
+		var thecheck = thedocshell[thelement.value];
+		if(thecheck)
+		{
+		    thelement.setAttribute("checked", "true");
+		    --thyes;
+		}
+		else{
+		    thelement.removeAttribute("checked");
+		    --theno;
+		}
+		var thestr = "gFrantShelley[this.value] = " + (!thecheck) + ";";
+		thelement.setAttribute("oncommand", thestr);
 	    }
 //	dump("_dvk_dbg_, .nsIDocShell:\t"); dump(thedocshell[thattr]); dump("\n");
 	    if(thedocshell.canExecuteScripts != thedocshell.allowJavascript)
 	    {
+		if(thedocshell.allowJavascript) --theno
+		    else --thyes;
 		thelement = document.getElementById("docShelley-javascript");
 		if(thedocshell.canExecuteScripts)
 			thelement.setAttribute("checked", "true")
@@ -35,8 +67,15 @@
 	    }
 	}
 	else
-	    for each (let theval in menuitem2shell)
-		document.getElementById(theval).setAttribute("disabled", "true");
+	    for each (let theval in menuitem2shell)	    
+	    {
+		var thelement = document.getElementById(theval);
+		thelement.removeAttribute("oncommand");
+		thelement.setAttribute("disabled", "true");
+	    }
+
+	document.getElementById("docShelley-allowall").setAttribute("disabled", (thyes == 0));
+	document.getElementById("docShelley-disallow").setAttribute("disabled", (theno == 0));
     }
     catch (e) {
 	thedocshell = null;
@@ -45,11 +84,6 @@
     return thedocshell;
  }
     
- function checkedShelley(anobj)
- {
-    if(gFrantShelley)
-	gFrantShelley[anobj.value] = !(anobj.hasAttribute('checked'));
- }
 </script>
 
   <menupopup id="contentAreaContextMenu" >
@@ -68,19 +102,25 @@
 	    <menupopup onpopupshowing="gFrantShelley = popupShelley();" onpopuphiding="gFrantShelley = null;">
                 <menuitem id="docShelley-javascript" type="checkbox" autocheck="false"
 			label="&menuJavascript.label;" value="allowJavascript"
-			accesskey="&menuJavascript.accesskey;" oncommand="checkedShelley(this);" />
-		
-                <menuitem id="docShelley-redirects" type="checkbox" autocheck="false"
-			  label="&menuRedirects.label;" value="allowMetaRedirects" 
-			accesskey="&menuRedirects.accesskey;" oncommand="checkedShelley(this);" />
-		
-                <menuitem id="docShelley-plugins" type="checkbox" autocheck="false"
-			  label="&menuPlugins.label;" value="allowPlugins"
-			accesskey="&menuPlugins.accesskey;" oncommand="checkedShelley(this);" />
+			accesskey="&menuJavascript.accesskey;" />
 		
                 <menuitem id="docShelley-subframes" type="checkbox" autocheck="false"
 			  label="&menuSubframes.label;" value="allowSubframes"
-			accesskey="&menuSubframes.accesskey;" oncommand="checkedShelley(this);" />
+			accesskey="&menuSubframes.accesskey;" />
+
+                <menuitem id="docShelley-redirects" type="checkbox" autocheck="false"
+			  label="&menuRedirects.label;" value="allowMetaRedirects" 
+			accesskey="&menuRedirects.accesskey;" />
+
+                <menuitem id="docShelley-plugins" type="checkbox" autocheck="false"
+			  label="&menuPlugins.label;" value="allowPlugins"
+			accesskey="&menuPlugins.accesskey;" />
+
+		<menuseparator />
+                <menuitem id="docShelley-allowall" label="&menuAllowall.label;" 
+			accesskey="&menuAllowall.accesskey;" oncommand="resetShell(true);" />
+                <menuitem id="docShelley-disallow" label="&menuDisallow.label;"
+			accesskey="&menuDisallow.accesskey;" oncommand="resetShell(false);" />
 		<menuseparator />
             </menupopup>
         </menu>
