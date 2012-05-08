@@ -6,37 +6,43 @@
 <script src="chrome://frantshelley/content/frantshelley.js" type="application/javascript" />
 
 <script type="application/javascript">
-    
- function resetShell(newvalue)
- {
-    if(gFrantShelley)
+
+if ("undefined" == typeof(Shelley)) {
+    var Shelley = {}
+}
+
+    //	for allowall \ disallow
+Shelley.reset = function (newvalue)
+{
+    if(Shelley.extCtxMenu)
     try {
 	var thelement;
-	for each (let theval in menuitem2shell)
+	for each (let theval in Shelley.item2shell)
 	{
 	    thelement = document.getElementById(theval);
-	    gFrantShelley[thelement.value] = newvalue;
+	    Shelley.extCtxMenu[thelement.value] = newvalue;
 	}
     }
     catch (e) {
         Components.utils.reportError(e)
     }
- }
- 
- function popupShelley()
- {
-    var thedocshell = gFrantShelley = null;
+}
+
+    // updates child state and returns object.nsIDocShell
+Shelley.popupshow = function()
+{
+    var thedocshell = Shelley.extCtxMenu = null;
     try {
 	var thyes = 0;
 	var theno = 0;
         thedocshell = content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                      .getInterface(Components.interfaces.nsIWebNavigation)
                      .QueryInterface(Components.interfaces.nsIDocShell);
-	if(thedocshell)
+	if(thedocshell)	//	then will return as Shelley.extCtxMenu
 	{
 	    thyes = theno = 4;
 	    var thelement;
-	    for each (let theval in menuitem2shell)
+	    for each (let theval in Shelley.item2shell)
 	    {
 		thelement = document.getElementById(theval);
     //thelement.oncommand = "gFrantShelley[this.value] = !(this.hasAttribute('checked'))";
@@ -51,7 +57,7 @@
 		    thelement.removeAttribute("checked");
 		    --theno;
 		}
-		var thestr = "gFrantShelley[this.value] = " + (!thecheck) + ";";
+		var thestr = "Shelley.extCtxMenu[this.value] = " + (!thecheck) + ";";
 		thelement.setAttribute("oncommand", thestr);
 	    }
 //	dump("_dvk_dbg_, .nsIDocShell:\t"); dump(thedocshell[thattr]); dump("\n");
@@ -67,7 +73,7 @@
 	    }
 	}
 	else
-	    for each (let theval in menuitem2shell)	    
+	    for each (let theval in Shelley.item2shell)
 	    {
 		var thelement = document.getElementById(theval);
 		thelement.removeAttribute("oncommand");
@@ -82,7 +88,7 @@
         Components.utils.reportError(e)
     }
     return thedocshell;
- }
+}
     
 </script>
 
@@ -92,14 +98,15 @@
                   oncommand="gContextMenu.target.parentNode.removeChild(gContextMenu.target);" />
         <menuitem id="context-openlinksandbox" label="&openLinkCmdInSandbox.label;" hidden="true"
                   insertafter="context-openlink" accesskey="&openLinkCmdInSandbox.accesskey;"
-                  oncommand="frantShelley.sandboxLink(gContextMenu);" />
+                  oncommand="Shelley.man.sandboxLink(gContextMenu);" />
         <menuitem id="context-setDesktopBackground" disabled="true" />
   </menupopup>
 
   <menubar id="main-menubar">
 	<menu id="docShelley-menu" label="&mainmenuShell.label;" accesskey="&mainmenuShell.accesskey;"
               flags="dont-test-empty" insertafter="view-menu" >
-	    <menupopup onpopupshowing="gFrantShelley = popupShelley();" onpopuphiding="gFrantShelley = null;">
+	    <menupopup onpopupshowing="Shelley.extCtxMenu = Shelley.popupshow();"
+		       onpopuphiding="Shelley.extCtxMenu = null;" >
                 <menuitem id="docShelley-javascript" type="checkbox" autocheck="false"
 			label="&menuJavascript.label;" value="allowJavascript"
 			accesskey="&menuJavascript.accesskey;" />
@@ -118,9 +125,9 @@
 
 		<menuseparator />
                 <menuitem id="docShelley-allowall" label="&menuAllowall.label;" 
-			accesskey="&menuAllowall.accesskey;" oncommand="resetShell(true);" />
+			accesskey="&menuAllowall.accesskey;" oncommand="Shelley.reset(true);" />
                 <menuitem id="docShelley-disallow" label="&menuDisallow.label;"
-			accesskey="&menuDisallow.accesskey;" oncommand="resetShell(false);" />
+			accesskey="&menuDisallow.accesskey;" oncommand="Shelley.reset(false);" />
 		<menuseparator />
             </menupopup>
         </menu>

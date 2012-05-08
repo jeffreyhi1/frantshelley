@@ -2,7 +2,7 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
       <em:id>frantshelley@code.google.com</em:id>
-      <em:version>0.1.1</em:version>
+      <em:version>0.1.2</em:version>
 
 		<em:localized>
 		  <Description>
@@ -14,8 +14,9 @@
 		</em:localized>
 
       <em:name>front Shell</em:name>
-<em:description>This extension gives you access to the properties by menu, and the browser does not save any changes after it was closed. 
-You should use the item Shelley of the main menu. These properties are set not only by the user activities, moreover they can be disabled to change by GUI.</em:description>
+<em:description>This extension gives you access to the shell properties by menu, you should use the item Shelley of the main menu.
+The browser does not save any changes after it was closed.
+These properties are set not only by the user activities, moreover they can be disabled to change by GUI.</em:description>
       <em:creator>&lt;kannoner@gmail.com&gt;</em:creator>
         <em:homepageURL>https://code.google.com/p/frantshelley/</em:homepageURL>
       <em:type>2</em:type> <!-- type=extension --> 

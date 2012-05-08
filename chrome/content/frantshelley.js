@@ -1,12 +1,18 @@
 
 "use strict";
 
-var gFrantShelley = null;
+if ("undefined" == typeof(Shelley)) {
+var Shelley = {
+      // context menu id per send issue
+   sendy     : [ "context-sendimage", "context-sendlink", "context-sendpage" ],
+      // context menu id per nsIDocShell property
+   item2shell: [ "docShelley-javascript", "docShelley-redirects", "docShelley-subframes", "docShelley-plugins" ],
+   extCtxMenu: null // var gFrantShelley = null; (para gContextMenu)
+   }
+}
 
-const someSends = [ "context-sendimage", "context-sendlink", "context-sendpage" ]
-
-// depend on : document, gContextMenu
-const pref2fire = {
+   // some handlers of "contentAreaContextMenu.popupshowing"
+Shelley.pref2fire = {   // depend on : document, gContextMenu
 
    'removeImage' : function (e) { // ..frantshelley.removeImage
          document.getElementById("context-removeimage").hidden =
@@ -19,16 +25,14 @@ const pref2fire = {
    },
 
    'hideSenditem' : function (e) { // ..frantshelley.hideSenditem
-      for each (let theval in someSends)
+      for each (let theval in Shelley.sendy)
           document.getElementById(theval).setAttribute("hidden", "true");
    }
 }
 // depend on : document, gContextMenu
 
-const menuitem2shell = [ "docShelley-javascript", "docShelley-redirects",
-                        "docShelley-subframes",  "docShelley-plugins"   ]
-
-var frantShelley = {
+// main object of ext: load\unload doc', menu.sandboxLink, observe of preference
+Shelley.man = {   // var frantShelley = {
 
   _branch: Components.classes["@mozilla.org/preferences-service;1"].
                getService(Components.interfaces.nsIPrefService).
@@ -55,7 +59,7 @@ var frantShelley = {
      return Services.ww.openWindow(thewin, getBrowserURL(), null, "chrome,dialog=no,all", sa);
   },
   
-//  menuitem id="context-openlinksandbox" oncommand="frantShelley.sandboxLink(gContextMenu);" 
+//  menuitem id="context-openlinksandbox" oncommand="Shelley.man.sandboxLink(gContextMenu);" 
   sandboxLink : function (aContextMenu) {
     try {
         var neowin = this._openExtraFrame(aContextMenu.target.ownerDocument, aContextMenu.linkURL);
@@ -81,9 +85,9 @@ var frantShelley = {
       var thelement = document.getElementById("contentAreaContextMenu");
       if(thelement && (document.loadOverlay))
       {
-         for (let thattr in pref2fire)
+         for (let thattr in Shelley.pref2fire)
             if(this._branch.getBoolPref(thattr))
-               thelement.addEventListener("popupshowing", pref2fire[thattr]);
+               thelement.addEventListener("popupshowing", Shelley.pref2fire[thattr]);
             
          if(this._branch.getBoolPref("hideSenditem"))
             document.getElementById("Browser:SendLink").setAttribute("disabled", "true");
@@ -97,13 +101,13 @@ var frantShelley = {
       if(!(document.loadOverlay)) return;
 
       var thelement = document.getElementById("contentAreaContextMenu");
-      if(thelement && (adata in pref2fire))
+      if(thelement && (adata in Shelley.pref2fire))
       try {
          
       if(this._branch.getBoolPref(adata))
-         thelement.addEventListener("popupshowing", pref2fire[adata]);         
+         thelement.addEventListener("popupshowing", Shelley.pref2fire[adata]);         
       else {
-         thelement.removeEventListener("popupshowing", pref2fire[adata]);
+         thelement.removeEventListener("popupshowing", Shelley.pref2fire[adata]);
          // indiscriminate set overlay items to hidden 
          document.getElementById("context-removeimage").setAttribute("hidden", "true");
          document.getElementById("context-openlinksandbox").setAttribute("hidden", "true");
@@ -140,5 +144,5 @@ var frantShelley = {
 
 };
 
- window.addEventListener("load", frantShelley, false);
- window.addEventListener("unload", frantShelley, false);
+ window.addEventListener("load", Shelley.man, false);
+ window.addEventListener("unload", Shelley.man, false);
