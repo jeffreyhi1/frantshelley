@@ -1,5 +1,5 @@
 content   frantshelley                 chrome/content/
-# skin      reduceiframe   classic/1.0   chrome/skin/
+skin      frantshelley   classic/1.0   chrome/skin/
 # resource  reduceiframe                 chrome/
 locale    frantshelley   en-US         chrome/locale/en-US/
 locale    frantshelley	 ru-RU         chrome/locale/ru-RU/
