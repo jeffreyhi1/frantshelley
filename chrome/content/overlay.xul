@@ -106,6 +106,11 @@ Shelley.popupshow = function()
 {
     var thedocshell = Shelley.extCtxMenu = null;
     try {
+        var thewintop = window.top.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                     .getInterface(Components.interfaces.nsIWebNavigation)
+                     .QueryInterface(Components.interfaces.nsIDocShell);
+//    dump("_dvk_dbg_, top window:\t"); dump(thewintop); dump("\n\n"); // _dvk_dbg_
+
 	var thyes = 0;
 	var theno = 0;
         thedocshell = content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
@@ -113,23 +118,33 @@ Shelley.popupshow = function()
                      .QueryInterface(Components.interfaces.nsIDocShell);
 	if(thedocshell)	//	then will return as Shelley.extCtxMenu
 	{
+	    if(!thewintop) thewintop = thedocshell;
 	    thyes = theno = 4;
 	    var thelement;
 	    for each (let theval in Shelley.item2shell)
 	    {
 		thelement = document.getElementById(theval);
     //thelement.oncommand = "gFrantShelley[this.value] = !(this.hasAttribute('checked'))";
-		thelement.removeAttribute("disabled");
 		var thecheck = thedocshell[thelement.value];
-		if(thecheck)
+		var theclash = thewintop[thelement.value];
+		if(thelement.value === "allowJavascript")
+		    theclash = thecheck; // canExecuteScripts makes difference
+		else
+		    if(theclash) theclash = thecheck; // indeed not clash:-)
+
+		if(theclash)
 		{
+		    thelement.removeAttribute("disabled");
 		    thelement.setAttribute("checked", "true");
 		    --thyes;
 		}
 		else{
+		    thelement.setAttribute("disabled", thecheck);
 		    thelement.removeAttribute("checked");
-		    --theno;
+		    --theno; // if disabled then exclude both:
+		    if(thecheck) --thyes;
 		}
+
 		var thestr = "Shelley.extCtxMenu[this.value] = " + (!thecheck) + ";";
 		thelement.setAttribute("oncommand", thestr);
 	    }
@@ -160,7 +175,7 @@ Shelley.popupshow = function()
 	thedocshell = null;
         Components.utils.reportError(e)
     }
-    
+
     //	BLOCK services "docShelley-status" menu item
     try {
 	var thelement = document.getElementById("docShelley-status");
@@ -174,7 +189,7 @@ Shelley.popupshow = function()
 
     return thedocshell;
 }
-    
+
 </script>
 
   <menupopup id="contentAreaContextMenu" >
@@ -185,6 +200,7 @@ Shelley.popupshow = function()
                   insertafter="context-openlink" accesskey="&openLinkCmdInSandbox.accesskey;"
                   oncommand="Shelley.man.sandboxLink(gContextMenu);" />
         <menuitem id="context-setDesktopBackground" disabled="true" />
+
   </menupopup>
 
   <menubar id="main-menubar">

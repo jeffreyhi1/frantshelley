@@ -78,7 +78,7 @@ Shelley.man = {   // var frantShelley = {
 
   startup: function() // Initialize the extension
   {
-      dump("_dvk_dbg_, startup\n");
+//      dump("_dvk_dbg_, startup frant shelly.\n");
 //      Services.prefs.addObserver(pref_BlockRefresh, this, false);
       this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2);
    // this[theval] = this._branch.getBoolPref(theval);
