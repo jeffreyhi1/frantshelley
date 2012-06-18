@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE overlay SYSTEM "chrome://frantshelley/locale/frantshelley.dtd">
 
-<overlay id="shelley-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script src="chrome://frantshelley/content/frantshelley.js" type="application/javascript" />
 
@@ -68,117 +68,102 @@ Shelley.readyState = {
 
     terminate: function()
     {
-	this.content.defaultView.removeEventListener("unload", this);
-	this.content.removeEventListener("readystatechange", this);
+	if(this.content)
+	{
+	    this.content.defaultView.removeEventListener("unload", this);
+	    this.content.removeEventListener("readystatechange", this);
+	}
+	this.content = null;
     }
 }
 
     //	for allowall \ disallow
 Shelley.reset = function (newvalue)
 {
-    if(Shelley.extCtxMenu)
-    try {
-	var thelement;
-	for each (let theval in Shelley.item2shell)
-	{
-	    thelement = document.getElementById(theval);
-	    Shelley.extCtxMenu[thelement.value] = newvalue;
-	}
-    }
-    catch (e) {
-        Components.utils.reportError(e)
-    }
+    var thedocshell = gBrowser.selectedBrowser.docShell;
+    for (let theval in Shelley.seltabState)
+	thedocshell[theval] = newvalue;
 }
 
-Shelley.popuphide = function()
+Shelley.appendixStop = function()
 {
-    try {
-	Shelley.extCtxMenu = null;
-	Shelley.readyState.terminate();
-    }
-    catch (e) {
-        Components.utils.reportError(e)
-    }
+    if(Shelley.seltabState.allowJavascript)
+    if(gBrowser)	// move to oncmd
+	gBrowser.selectedBrowser.webNavigation.stop(Components.interfaces.nsIWebNavigation.STOP_CONTENT);
+//    dump("_dvk_dbg_, stick appendix event to 'docShelley-javascript'.\n"); // _dvk_dbg_
 }
 
     // updates child state and returns object.nsIDocShell
 Shelley.popupshow = function()
 {
-    var thedocshell = Shelley.extCtxMenu = null;
+    if(!gBrowser) return;
+    var thedocshell = gBrowser.selectedBrowser.docShell;
+    if(!thedocshell) return;
+
+//	save state
+    for (let theval in Shelley.seltabState)
+	Shelley.seltabState[theval] = thedocshell[theval];
+
     try {
-        var thewintop = window.top.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                     .getInterface(Components.interfaces.nsIWebNavigation)
-                     .QueryInterface(Components.interfaces.nsIDocShell);
-//    dump("_dvk_dbg_, top window:\t"); dump(thewintop); dump("\n\n"); // _dvk_dbg_
+//	if(browser) dump("_dvk_dbg_, browser.\n"); _dvk_dbg_
+//	if(appcontent) dump("_dvk_dbg_, appcontent.\n");
+        var thewintop = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                    .getInterface(Components.interfaces.nsIWebNavigation)
+                    .QueryInterface(Components.interfaces.nsIDocShell);
+//    dump("_dvk_dbg_, top window:\t"); dump(gBrowser.selectedBrowser.docShell); dump("\n\n"); // _dvk_dbg_
+	if(!thewintop) thewintop = thedocshell;
 
-	var thyes = 0;
-	var theno = 0;
-        thedocshell = content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                     .getInterface(Components.interfaces.nsIWebNavigation)
-                     .QueryInterface(Components.interfaces.nsIDocShell);
-	if(thedocshell)	//	then will return as Shelley.extCtxMenu
+	var thyes = 4;
+	var theno = 4;
+
+	for each (let theval in Shelley.item2shell)
 	{
-	    if(!thewintop) thewintop = thedocshell;
-	    thyes = theno = 4;
-	    var thelement;
-	    for each (let theval in Shelley.item2shell)
-	    {
-		thelement = document.getElementById(theval);
-    //thelement.oncommand = "gFrantShelley[this.value] = !(this.hasAttribute('checked'))";
-		var thecheck = thedocshell[thelement.value];
-		var theclash = thewintop[thelement.value];
-		if(thelement.value === "allowJavascript")
-		    theclash = thecheck; // canExecuteScripts makes difference
-		else
-		    if(theclash) theclash = thecheck; // indeed not clash:-)
+	    let thelement = document.getElementById(theval);
+//thelement.oncommand = "gFrantShelley[this.value] = !(this.hasAttribute('checked'))";
+	    let thecheck = Shelley.seltabState[thelement.value];
+	    let theclash = thewintop[thelement.value];
+	    if(thelement.value === "allowJavascript")
+		theclash = thecheck; // canExecuteScripts makes difference
+	    else
+		if(theclash) theclash = thecheck; // indeed not clash:-)
 
-		if(theclash)
-		{
-		    thelement.removeAttribute("disabled");
-		    thelement.setAttribute("checked", "true");
-		    --thyes;
-		}
-		else{
-		    thelement.setAttribute("disabled", thecheck);
-		    thelement.removeAttribute("checked");
-		    --theno; // if disabled then exclude both:
-		    if(thecheck) --thyes;
-		}
-
-		var thestr = "Shelley.extCtxMenu[this.value] = " + (!thecheck) + ";";
-		thelement.setAttribute("oncommand", thestr);
-	    }
-//	dump("_dvk_dbg_, .nsIDocShell:\t"); dump(thedocshell[thattr]); dump("\n");
-	    if(thedocshell.canExecuteScripts != thedocshell.allowJavascript)
+	    if(theclash)
 	    {
-		if(thedocshell.allowJavascript) --theno
-		    else --thyes;
-		thelement = document.getElementById("docShelley-javascript");
-		if(thedocshell.canExecuteScripts)
-			thelement.setAttribute("checked", "true")
-		    else thelement.removeAttribute("checked");
-		thelement.setAttribute("disabled", "true");
+		thelement.removeAttribute("disabled");
+		thelement.setAttribute("checked", "true");
+		--thyes;
 	    }
+	    else{
+		thelement.setAttribute("disabled", thecheck);
+		thelement.removeAttribute("checked");
+		--theno; // if disabled then exclude both:
+		if(thecheck) --thyes;
+	    }
+//	    let thestr = "gBrowser.selectedBrowser.docShell[this.value] = " + (!thecheck) + ";";
+//	    thelement.setAttribute("oncommand", thestr);
 	}
-	else
-	    for each (let theval in Shelley.item2shell)
-	    {
-		var thelement = document.getElementById(theval);
-		thelement.removeAttribute("oncommand");
-		thelement.setAttribute("disabled", "true");
-	    }
+//	dump("_dvk_dbg_, .nsIDocShell:\t"); dump(thedocshell[thattr]); dump("\n");
+	if(thedocshell.canExecuteScripts != thedocshell.allowJavascript)
+	{
+	    if(thedocshell.allowJavascript) --theno
+		else --thyes;
+	    let thelement = document.getElementById("docShelley-javascript");
+	    if(thedocshell.canExecuteScripts)
+		    thelement.setAttribute("checked", "true")
+		else thelement.removeAttribute("checked");
+	    thelement.setAttribute("disabled", "true");
+	}
 
 	document.getElementById("docShelley-allowall").setAttribute("disabled", (thyes == 0));
 	document.getElementById("docShelley-disallow").setAttribute("disabled", (theno == 0));
     }
     catch (e) {
-	thedocshell = null;
         Components.utils.reportError(e)
     }
 
     //	BLOCK services "docShelley-status" menu item
     try {
-	var thelement = document.getElementById("docShelley-status");
+	let thelement = document.getElementById("docShelley-status");
     //	readystatechange
 	Shelley.readyState.initialize(content, thelement);
 	Shelley.readyState.update(content.document.readyState);
@@ -187,7 +172,7 @@ Shelley.popupshow = function()
         Components.utils.reportError(e)
     }
 
-    return thedocshell;
+    return;
 }
 
 </script>
@@ -200,16 +185,17 @@ Shelley.popupshow = function()
                   insertafter="context-openlink" accesskey="&openLinkCmdInSandbox.accesskey;"
                   oncommand="Shelley.man.sandboxLink(gContextMenu);" />
         <menuitem id="context-setDesktopBackground" disabled="true" />
-
+	
   </menupopup>
 
   <menubar id="main-menubar">
 	<menu id="docShelley-menu" label="&mainmenuShell.label;" accesskey="&mainmenuShell.accesskey;"
               flags="dont-test-empty" insertafter="view-menu" >
-	    <menupopup onpopupshowing="Shelley.extCtxMenu = Shelley.popupshow();"
-		       onpopuphiding="Shelley.popuphide();" >
+	    <menupopup onpopupshowing="Shelley.popupshow();"
+		       onpopuphiding="Shelley.readyState.terminate();" >
                 <menuitem id="docShelley-javascript" type="checkbox" autocheck="false"
 			label="&menuJavascript.label;" value="allowJavascript"
+			oncommand="Shelley.appendixStop();"
 			accesskey="&menuJavascript.accesskey;" />
 		
                 <menuitem id="docShelley-subframes" type="checkbox" autocheck="false"

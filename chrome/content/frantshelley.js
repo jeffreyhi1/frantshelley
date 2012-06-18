@@ -7,7 +7,49 @@ var Shelley = {
    sendy     : [ "context-sendimage", "context-sendlink", "context-sendpage" ],
       // context menu id per nsIDocShell property
    item2shell: [ "docShelley-javascript", "docShelley-redirects", "docShelley-subframes", "docShelley-plugins" ],
-   extCtxMenu: null // var gFrantShelley = null; (para gContextMenu)
+   seltabState:
+      {
+         allowJavascript   : true,
+         allowSubframes    : true,
+         allowMetaRedirects: true,
+         allowPlugins      : true
+      },
+
+   command: function(event)
+      {
+      if(gBrowser)
+         gBrowser.selectedBrowser.docShell[this.value]
+                     = !(Shelley.seltabState[this.value]);
+//      dump("_dvk_dbg_, oncmd value:\t"); dump(this.value); dump("\n");
+      },
+
+   initialize: function()
+      {
+      for each (let theval in Shelley.item2shell)
+      {
+         let thelement = document.getElementById(theval);
+         thelement.addEventListener("command", Shelley.command, false);
+      }
+      if(gBrowser)
+         gBrowser.tabContainer.addEventListener("TabOpen",
+               function (event) { window.setTimeout(Shelley.propagation, 1, event.target) },
+                        false);  
+      },
+
+   propagation: function(atarget)
+      {
+      if(!gBrowser) return;
+      if(gBrowser.selectedTab === atarget) return;
+
+         var thedocshell = gBrowser.selectedBrowser.docShell;
+         var thebrowser = gBrowser.getBrowserForTab(atarget);
+         if(thebrowser)
+         for (let theval in Shelley.seltabState)
+            if(!(thedocshell[theval]))
+               thebrowser.docShell[theval] = false;
+
+      return;
+      }
    }
 }
 
@@ -93,6 +135,8 @@ Shelley.man = {   // var frantShelley = {
             document.getElementById("Browser:SendLink").setAttribute("disabled", "true");
       }      
       this._branch.addObserver("", this, false);
+      
+      Shelley.initialize();
   },
 
   observe: function(asubject, atopic, adata)
@@ -143,6 +187,10 @@ Shelley.man = {   // var frantShelley = {
   }
 
 };
+
+// _dvk_dbg_
+//   gBrowser.tabContainer.addEventListener("TabSelect", function() { dump("_dvk_dbg, select event.\n") }, false);  
+// _dvk_dbg_
 
  window.addEventListener("load", Shelley.man, false);
  window.addEventListener("unload", Shelley.man, false);
