@@ -7,7 +7,7 @@
 <!ENTITY openLinkInSandbox.setitle "В меню будет пункт Открыть в песочнице">
 <!ENTITY openLinkInSandbox.tooltiptext "расширение контекстного меню ссылок">
 <!ENTITY hideSendLinkImage.setitle "В меню не будет пункта Отправить">
-<!ENTITY hideSendLinkImage.tooltiptext "пункта Отправить для изображений и ссылок не будет">
+<!ENTITY hideSendLinkImage.tooltiptext "пункта меню Отправить для изображений и ссылок не будет">
 <!ENTITY mainmenuShell.label   "Шелли">
 <!ENTITY mainmenuShell.accesskey  "Ш">
 <!ENTITY menuJavascript.label   "Исполнять скрипты">
