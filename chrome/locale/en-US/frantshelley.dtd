@@ -23,9 +23,9 @@
 <!ENTITY menuDisallow.label   "Disallow All">
 <!ENTITY menuDisallow.accesskey  "D">
 <!ENTITY menuStatus.label   "Page Status: ">
-<!ENTITY btnDisallow.label   "Disallow Javascript">
+<!ENTITY btnDisallow.label   "Disallow J'script">
 <!ENTITY btnDisallow.tooltiptext   "Disallow javascript on current tab.">
-<!ENTITY showMainmenu.setitle "Insert me to main menu">
+<!ENTITY showMainmenu.setitle "Insert me to the main menu">
 <!ENTITY showMainmenu.tooltiptext "The submenu Shelley will be in the main menu.">
-<!ENTITY allowPlugins.setitle "Allow your plug-ins">
+<!ENTITY allowPlugins.setitle "Allow your installed plug-ins">
 <!ENTITY allowPlugins.tooltiptext "By default, installed plugins will be allowed for new page.">
