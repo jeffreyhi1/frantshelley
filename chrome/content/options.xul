@@ -3,6 +3,14 @@
 <!DOCTYPE groupbox SYSTEM "chrome://frantshelley/locale/frantshelley.dtd">
 
 <groupbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" >
+   
+   <setting type="bool" pref="extensions.frantshelley.showMainmenu"
+            title="&showMainmenu.setitle;"
+            tooltiptext="&showMainmenu.tooltiptext;" />
+   <setting type="bool" pref="extensions.frantshelley.allowPlugins"
+            title="&allowPlugins.setitle;"
+            tooltiptext="&allowPlugins.tooltiptext;" />
+   
    <setting type="bool" pref="extensions.frantshelley.removeImage"
             title="&eraseImage.setitle;"
             tooltiptext="&eraseImage.tooltiptext;" />

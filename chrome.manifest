@@ -4,4 +4,6 @@ skin      frantshelley   classic/1.0   chrome/skin/
 locale    frantshelley   en-US         chrome/locale/en-US/
 locale    frantshelley	 ru-RU         chrome/locale/ru-RU/
 
-overlay   chrome://browser/content/browser.xul   chrome://frantshelley/content/overlay.xul
+overlay   chrome://browser/content/browser.xul          chrome://frantshelley/content/overlay.xul
+
+style   chrome://global/content/customizeToolbar.xul    chrome://frantshelley/skin/frantshelley.css

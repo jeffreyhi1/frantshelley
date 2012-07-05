@@ -1,13 +1,13 @@
 <!ENTITY eraseImage.label   "Удалить изображение">
 <!ENTITY eraseImage.accesskey  "У">
-<!ENTITY eraseImage.setitle "В меню будет пункт Удалить изображение.">
-<!ENTITY eraseImage.tooltiptext "расширение контекстного меню изображений">
+<!ENTITY eraseImage.setitle "Меню с пунктом Удалить изображение.">
+<!ENTITY eraseImage.tooltiptext "Расширение для контекстного меню изображений.">
 <!ENTITY openLinkCmdInSandbox.label   "Открыть в песочнице">
 <!ENTITY openLinkCmdInSandbox.accesskey  "п">
-<!ENTITY openLinkInSandbox.setitle "В меню будет пункт Открыть в песочнице">
-<!ENTITY openLinkInSandbox.tooltiptext "расширение контекстного меню ссылок">
+<!ENTITY openLinkInSandbox.setitle "Меню с пунктом Открыть в песочнице">
+<!ENTITY openLinkInSandbox.tooltiptext "Расширение для контекстного меню ссылок.">
 <!ENTITY hideSendLinkImage.setitle "В меню не будет пункта Отправить">
-<!ENTITY hideSendLinkImage.tooltiptext "пункта меню Отправить для изображений и ссылок не будет">
+<!ENTITY hideSendLinkImage.tooltiptext "В контекстном меню изображений и ссылок не будет пункта меню Отправить.">
 <!ENTITY mainmenuShell.label   "Шелли">
 <!ENTITY mainmenuShell.accesskey  "Ш">
 <!ENTITY menuJavascript.label   "Исполнять скрипты">
@@ -23,3 +23,9 @@
 <!ENTITY menuDisallow.label   "Сбросить все">
 <!ENTITY menuDisallow.accesskey  "С">
 <!ENTITY menuStatus.label   "Статус страницы: ">
+<!ENTITY btnDisallow.label   "Без скрипта">
+<!ENTITY btnDisallow.tooltiptext   "Игнорировать скрипт на текущей закладке.">
+<!ENTITY showMainmenu.setitle "Фигурировать в главном меню">
+<!ENTITY showMainmenu.tooltiptext "Подпункт меню Шелли будет в главном меню.">
+<!ENTITY allowPlugins.setitle "Подключать библиотеки">
+<!ENTITY allowPlugins.tooltiptext "По умолчанию, плагины будут подключаться к новым страницам.">

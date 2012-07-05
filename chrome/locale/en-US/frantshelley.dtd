@@ -1,13 +1,13 @@
 <!ENTITY eraseImage.label   "Erase Image">
 <!ENTITY eraseImage.accesskey  "E">
 <!ENTITY eraseImage.setitle "The Erase Image is in the context menu">
-<!ENTITY eraseImage.tooltiptext "appendage item of context menu of images">
+<!ENTITY eraseImage.tooltiptext "This is an extra item of the context menu of an image.">
 <!ENTITY openLinkCmdInSandbox.label   "Open Link in Sandbox">
 <!ENTITY openLinkCmdInSandbox.accesskey  "S">
 <!ENTITY openLinkInSandbox.setitle "The Open Link in Sandbox is in the context menu">
-<!ENTITY openLinkInSandbox.tooltiptext "appendage item of context menu of links">
+<!ENTITY openLinkInSandbox.tooltiptext "This is an extra item of the context menu of a link.">
 <!ENTITY hideSendLinkImage.setitle "The Send item of the context menu is hidden">
-<!ENTITY hideSendLinkImage.tooltiptext "send item for links and images is hidden">
+<!ENTITY hideSendLinkImage.tooltiptext "The Send item for the context menu of a link and an image is hidden.">
 <!ENTITY mainmenuShell.label   "Shelley">
 <!ENTITY mainmenuShell.accesskey  "S">
 <!ENTITY menuJavascript.label   "Allow Javascript">
@@ -23,3 +23,9 @@
 <!ENTITY menuDisallow.label   "Disallow All">
 <!ENTITY menuDisallow.accesskey  "D">
 <!ENTITY menuStatus.label   "Page Status: ">
+<!ENTITY btnDisallow.label   "Disallow Javascript">
+<!ENTITY btnDisallow.tooltiptext   "Disallow javascript on current tab.">
+<!ENTITY showMainmenu.setitle "Insert me to main menu">
+<!ENTITY showMainmenu.tooltiptext "The submenu Shelley will be in the main menu.">
+<!ENTITY allowPlugins.setitle "Allow your plug-ins">
+<!ENTITY allowPlugins.tooltiptext "By default, installed plugins will be allowed for new page.">

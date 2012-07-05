@@ -1,0 +1,26 @@
+
+toolbarbutton#docShelley-jstop
+{
+    list-style-image: url("chrome://frantshelley/skin/jstop3.png");
+}
+
+toolbar[iconsize="small"] #docShelley-jstop
+{
+    list-style-image: url("chrome://frantshelley/skin/triple.png");
+    -moz-image-region: rect(0px 15px 16px 0px);
+}
+
+toolbar[iconsize="small"] #docShelley-jstop[disabled="true"]
+{
+    -moz-image-region: rect(0px 47px 16px 33px);
+}
+
+toolbar[iconsize="small"] #docShelley-jstop[disabled="true"]:hover
+{
+    -moz-image-region: rect(0px 47px 16px 33px);
+}
+
+toolbar[iconsize="small"] #docShelley-jstop:hover
+{
+    -moz-image-region: rect(0px 31px 16px 16px);
+}
