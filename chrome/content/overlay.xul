@@ -21,7 +21,7 @@
   <menubar id="main-menubar">
 	<menu id="docShelley-menu" label="&mainmenuShell.label;" accesskey="&mainmenuShell.accesskey;"
               flags="dont-test-empty" insertafter="view-menu" >
-	    <menupopup onpopupshowing="Shelley.popupshow();"
+	    <menupopup onpopupshowing="Shelley.popupshow(gBrowser.selectedBrowser);"
 		       onpopuphiding="Shelley.popuphide();" >
                 <menuitem id="docShelley-javascript" type="checkbox" autocheck="false"
 			label="&menuJavascript.label;" value="allowJavascript"
@@ -42,9 +42,11 @@
 
 		<menuseparator />
                 <menuitem id="docShelley-allowall" label="&menuAllowall.label;" 
-			accesskey="&menuAllowall.accesskey;" oncommand="Shelley.reset(true);" />
+			accesskey="&menuAllowall.accesskey;"
+			oncommand="Shelley.reset(gBrowser.selectedBrowser, true);" />
                 <menuitem id="docShelley-disallow" label="&menuDisallow.label;"
-			accesskey="&menuDisallow.accesskey;" oncommand="Shelley.reset(false);" />
+			accesskey="&menuDisallow.accesskey;"
+			oncommand="Shelley.reset(gBrowser.selectedBrowser, false);" />
 		<menuseparator />
                 <menuitem id="docShelley-status" label="Status" type="radio"
 			autocheck="false" disabled="true" value="&menuStatus.label;" />
@@ -54,7 +56,7 @@
 
 <window id="main-window">
   <commandset id="shelleyCommandSet" events="focus" oncommandupdate="Shelley.update(this);" >
-    <command id="cmd_shelleyCommon" oncommand="Shelley.cmdJstop();" />
+    <command id="cmd_shelleyCommon" oncommand="Shelley.cmdJstop(gBrowser.selectedBrowser);" />
   </commandset>
 </window>
 

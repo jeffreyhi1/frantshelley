@@ -20,14 +20,14 @@ var Shelley = {
    _fire: function(anevent)
    {
       if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
-      Shelley.timeout = window.setTimeout(Shelley.update, 222, anevent.target);
+      Shelley.timeout = window.setTimeout(Shelley.update, 333, anevent.target);
 //      dump("_dvk_dbg_, fire type:\t"); dump(anevent.type); dump("\n")
    },
 
    update: function(aself)
       {
          Shelley.timeout = null;
-   
+
          if(gBrowser)
          try {            
             var thedocshell = gBrowser.selectedBrowser.docShell;
@@ -49,15 +49,15 @@ var Shelley = {
       },
 
    // command id="cmd_shelleyCommon" oncommand="Shelley.cmdJstop();" 
-   cmdJstop: function()
+   cmdJstop: function(abrowser)
       {
          if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
-         var thebrowser = gBrowser.selectedBrowser;
+
          try {
             Shelley.seltabState.allowJavascript = true;
-            Shelley.appendixStop(thebrowser);
+            Shelley.appendixStop(abrowser);
 
-            thebrowser.docShell.allowJavascript = false;
+            abrowser.docShell.allowJavascript = false;
             Shelley.update(null);
          }
          catch (e) {
@@ -75,13 +75,12 @@ var Shelley = {
       },
 
    // id="docShelley-allowall" menuitem's id="docShelley-disallow" 
-   reset : function (newvalue)
+   reset : function (abrowser, newvalue)
       {
-         if(!newvalue) Shelley.appendixStop(gBrowser.selectedBrowser);
+         if(!newvalue) Shelley.appendixStop(abrowser);
       //	for allowall \ disallow
-         var thedocshell = gBrowser.selectedBrowser.docShell;
          for (let theval in Shelley.seltabState)
-              thedocshell[theval] = newvalue;
+              abrowser.docShell[theval] = newvalue;
       },
 
    initialize: function(anallow)
@@ -114,7 +113,7 @@ var Shelley = {
       },
 
    // fire by TabOpen
-   propagation: function(atarget, anallow)
+   propagation: function(atarget)
       {
       if(gBrowser)
       try {
@@ -199,33 +198,29 @@ Shelley.readyState = {
    terminate: function()
    {
       if(this.content)
-      {
-	 this.content.defaultView.removeEventListener("unload", this);
+      try {
 	 this.content.removeEventListener("readystatechange", this);
+	 this.content.defaultView.removeEventListener("unload", this);
       }
-      this.content = null;
+      finally {
+         this.content = null;
+      }
    }
 }
 
 Shelley.popuphide = function()
 {
-    try {
-	Shelley.update(null);
-	Shelley.readyState.terminate();    
-    }
-    catch (e) {
-        Components.utils.reportError(e)
-    }
+   Shelley.update(null);
+   Shelley.readyState.terminate();
 }
 
 // menupopup onpopupshowing="Shelley.popupshow();" onpopuphiding="Shelley.popuphide();"
 
-Shelley.popupshow = function()
+Shelley.popupshow = function(abrowser)
 {
    if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
 
-   if(!gBrowser) return;
-   var thedocshell = gBrowser.selectedBrowser.docShell;
+   var thedocshell = abrowser.docShell;
    if(!thedocshell) return;
 
 //	save state
@@ -431,8 +426,10 @@ Shelley.main = {   // var frantShelley = {
       {
          if(this._branch.getBoolPref("showMainmenu"))
             document.getElementById("docShelley-menu").removeAttribute("hidden");
-         else
+         else {
+            Shelley.readyState.terminate();            
             document.getElementById("docShelley-menu").setAttribute("hidden", "true");
+         }
       }
       else this._allowPlugins = this._branch.getBoolPref("allowPlugins");
 
