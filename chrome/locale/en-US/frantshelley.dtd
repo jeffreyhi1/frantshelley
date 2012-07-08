@@ -23,7 +23,7 @@
 <!ENTITY menuDisallow.label   "Disallow All">
 <!ENTITY menuDisallow.accesskey  "D">
 <!ENTITY menuStatus.label   "Page Status: ">
-<!ENTITY btnDisallow.label   "Disallow J'script">
+<!ENTITY btnDisallow.label   "Disallow script">
 <!ENTITY btnDisallow.tooltiptext   "Disallow javascript on current tab.">
 <!ENTITY showMainmenu.setitle "Insert me to the main menu">
 <!ENTITY showMainmenu.tooltiptext "The submenu Shelley will be in the main menu.">

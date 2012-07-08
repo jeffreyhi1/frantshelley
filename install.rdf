@@ -2,7 +2,7 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
       <em:id>frantshelley@code.google.com</em:id>
-      <em:version>0.2.0</em:version>
+      <em:version>0.2.1</em:version>
 
 		<em:localized>
 		  <Description>
@@ -17,7 +17,7 @@
 
       <em:name>front Shell</em:name>
 <em:description>This extension gives you access to the shell properties by menu, you should use the item Shelley of the main menu.
-The browser does not save any changes after it was closed.
+The browser does not save any changes after it was closed. Also, you can use the new button on the toolbar to stop executing a script and disallow it on a page.
 These properties are set not only by the user activities, moreover they can be disabled to change by GUI.</em:description>
       <em:creator>&lt;kannoner@gmail.com&gt;</em:creator>
       <em:homepageURL>https://code.google.com/p/frantshelley/</em:homepageURL>

@@ -1,6 +1,11 @@
 
 "use strict";
 
+if ("undefined" == typeof(shelleyBrowserToolboxCustomizeDone))
+{
+   var shelleyBrowserToolboxCustomizeDone = null;
+}
+
 if ("undefined" == typeof(Shelley)) {
 var Shelley = {
       // context menu id per send issue
@@ -20,8 +25,12 @@ var Shelley = {
    _fire: function(anevent)
    {
       if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
-      Shelley.timeout = window.setTimeout(Shelley.update, 333, anevent.target);
-//      dump("_dvk_dbg_, fire type:\t"); dump(anevent.type); dump("\n")
+
+      Shelley.timeout = window.setTimeout(Shelley.update, 333, anevent);
+/*    dump("_dvk_dbg_, fire type:\t"); dump(anevent.type); dump("\n")
+      if(anevent.currentTarget === anevent.target)
+            dump("_dvk_dbg_, currentTarget === anevent.target\n")
+      dump("\n"); */
    },
 
    update: function(aself)
@@ -69,9 +78,15 @@ var Shelley = {
    appendixStop: function(abrowser)
       {
          if(Shelley.seltabState.allowJavascript)
-         if(!(abrowser.contentDocument.loadOverlay))
+//         if(!(abrowser.contentDocument.loadOverlay))
+         try {
             abrowser.webNavigation.stop(
                Components.interfaces.nsIWebNavigation.STOP_CONTENT);
+            Shelley._setRescript();
+         }
+         catch (e) {
+            Components.utils.reportError(e)
+         }      
       },
 
    // id="docShelley-allowall" menuitem's id="docShelley-disallow" 
@@ -83,6 +98,50 @@ var Shelley = {
               abrowser.docShell[theval] = newvalue;
       },
 
+   // when indicator is then refresh plus allowJavascript
+   rescript: function(anevent)
+   {
+      if(gBrowser)
+      if(!(gBrowser.selectedBrowser.docShell.canExecuteScripts))
+         gBrowser.selectedBrowser.docShell.allowJavascript = true;
+   },
+
+   _setRescript : function()
+   {
+      var thelement = document.getElementById("Browser:Reload");
+         if(document.getElementById("docShelley-jstop"))
+            thelement.addEventListener("command", Shelley.rescript, false);
+         else
+            thelement.removeEventListener("command", Shelley.rescript, false);
+   },
+   
+   customizeDone : function(aToolboxChanged)
+      {  
+//     function BrowserToolboxCustomizeDone(aToolboxChanged)
+//          original from browser.js
+         shelleyBrowserToolboxCustomizeDone(aToolboxChanged);
+
+         try {
+            Shelley._setRescript()
+         }
+         catch (e) {
+            Components.utils.reportError(e)
+         }
+      },
+   
+   _delayLoad : function()
+   {
+      gBrowser.addEventListener("DOMContentLoaded", Shelley._fire, false);
+      
+      var navtoolbox = document.getElementById("navigator-toolbox");
+      if(navtoolbox)
+      if(navtoolbox.customizeDone)
+      {
+         shelleyBrowserToolboxCustomizeDone = navtoolbox.customizeDone;
+         navtoolbox.customizeDone = Shelley.customizeDone;
+      }
+   },
+   
    initialize: function(anallow)
       {
 
@@ -101,13 +160,12 @@ var Shelley = {
                      false);
 
    // update cmd_shelleyCommon -> toolbar button
+   // events:  "TabSelect",   "pageshow", "DOMContentLoaded".
       gBrowser.tabContainer.addEventListener("TabSelect", Shelley._fire, false);
       gBrowser.addEventListener("pageshow", Shelley._fire, false);
-      window.setTimeout( function ()
-         {
-            gBrowser.addEventListener("DOMContentLoaded", Shelley._fire, false)
-         }, 666);
+      window.setTimeout(Shelley._delayLoad, 666);
 
+   // depend on "extensions.frantshelley.allowPlugins" preference
       if(!anallow) gBrowser.selectedBrowser.docShell.allowPlugins = false;
          
       },
@@ -233,7 +291,7 @@ Shelley.popupshow = function(abrowser)
         var thewintop = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                     .getInterface(Components.interfaces.nsIWebNavigation)
                     .QueryInterface(Components.interfaces.nsIDocShell);
-//    dump("_dvk_dbg_, top window:\t"); dump(gBrowser.selectedBrowser.docShell); dump("\n\n"); // _dvk_dbg_
+//    dump("_dvk_dbg_, top window:\t"); dump(gBrowser.selectedBrowser.docShell); dump("\n\n");
 	if(!thewintop) thewintop = thedocshell;
 
 	var thyes = 4;
@@ -405,7 +463,6 @@ Shelley.main = {   // var frantShelley = {
   observe: function(asubject, atopic, adata)
   {
       if(atopic != "nsPref:changed") return;
-      if(!(document.loadOverlay)) return;
 
       try {
 
@@ -434,10 +491,8 @@ Shelley.main = {   // var frantShelley = {
       else this._allowPlugins = this._branch.getBoolPref("allowPlugins");
 
       // update always
-      if(this._branch.getBoolPref("hideSenditem"))
-         document.getElementById("Browser:SendLink").setAttribute("disabled", "true");
-      else
-         document.getElementById("Browser:SendLink").removeAttribute("disabled");
+      let theval = this._branch.getBoolPref("hideSenditem");
+      document.getElementById("Browser:SendLink").setAttribute("disabled", theval);
 
       } catch (e) {
         Components.utils.reportError(e)
