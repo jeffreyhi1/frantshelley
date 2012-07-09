@@ -18,7 +18,7 @@
 
       <em:name>front Shell</em:name>
 <em:description>This extension gives you access to the shell properties by menu, you should use the item Shelley of the main menu.
-The browser does not save any changes after it was closed. Also, you can use the new button on the toolbar to stop executing a script and disallow it on a page.
+The browser does not save any changes after it was closed. Also, you can use the new button on the toolbar (Disallow Script) to stop executing a script (the Customize Toolbar dialog).
 If you want to disallow the installed plug-ins by default, use the options page of the extension.</em:description>
       <em:creator>&lt;kannoner@gmail.com&gt;</em:creator>
       <em:homepageURL>https://code.google.com/p/frantshelley/</em:homepageURL>
