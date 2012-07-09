@@ -108,11 +108,21 @@ var Shelley = {
 
    _setRescript : function()
    {
-      var thelement = document.getElementById("Browser:Reload");
-         if(document.getElementById("docShelley-jstop"))
-            thelement.addEventListener("command", Shelley.rescript, false);
-         else
-            thelement.removeEventListener("command", Shelley.rescript, false);
+      var theval = document.getElementById("docShelley-jstop");
+      var thupdate = function(aname)
+      {
+         var thelement = document.getElementById(aname);
+         if(thelement)
+            if(theval)
+               thelement.addEventListener("command", Shelley.rescript, false);
+            else
+               thelement.removeEventListener("command", Shelley.rescript, false);
+      }
+
+      thupdate("Browser:Reload");
+      thupdate("Browser:ReloadOrDuplicate");
+      thupdate("Browser:ReloadSkipCache");
+
    },
    
    customizeDone : function(aToolboxChanged)
