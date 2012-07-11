@@ -10,6 +10,7 @@ if ("undefined" == typeof(Shelley)) {
 var Shelley = {
       // context menu id per send issue
    sendy     : [ "context-sendimage", "context-sendlink", "context-sendpage" ],
+   refreshy : [ "Browser:Reload", "Browser:ReloadOrDuplicate", "Browser:ReloadSkipCache" ],
       // context menu id per nsIDocShell property
    item2shell: [ "docShelley-javascript", "docShelley-redirects", "docShelley-subframes", "docShelley-plugins" ],
    seltabState:
@@ -22,23 +23,21 @@ var Shelley = {
    timeout : null,   // update button timeout, window.clearTimeout.
 //	docShelley-jstop -> cmd_shelleyCommon
 
-   _fire: function(anevent)
-   {
-      if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
+   _fireup: function(anevent) // for Shelley.update
+      {
+         if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
 
-      Shelley.timeout = window.setTimeout(Shelley.update, 333, anevent);
+         Shelley.timeout = window.setTimeout(Shelley._update, 333, anevent);
 /*    dump("_dvk_dbg_, fire type:\t"); dump(anevent.type); dump("\n")
       if(anevent.currentTarget === anevent.target)
-            dump("_dvk_dbg_, currentTarget === anevent.target\n")
-      dump("\n"); */
-   },
+      dump("_dvk_dbg_, currentTarget === anevent.target\n") */
+      },
 
-   update: function(aself)
+   _update: function(aself) // charge above
       {
          Shelley.timeout = null;
-
          if(gBrowser)
-         try {            
+         try {
             var thedocshell = gBrowser.selectedBrowser.docShell;
       //	    theman.removeAttribute("disabled");
             document.getElementById("cmd_shelleyCommon").setAttribute(
@@ -49,12 +48,14 @@ var Shelley = {
          }
       },
 
+   //   cmd's of children of menu id="docShelley-menu" 
    command: function(event)
       {
-      if(gBrowser)
-         gBrowser.selectedBrowser.docShell[this.value]
+         if(gBrowser)
+            gBrowser.selectedBrowser.docShell[this.value]
                      = !(Shelley.seltabState[this.value]);
-//      dump("_dvk_dbg_, .selectedBrowser.contentDocument:\t"); dump(gBrowser.selectedBrowser.contentDocument);
+//    dump("_dvk_dbg_, .selectedBrowser.contentDocument:\t");
+//    dump(gBrowser.selectedBrowser.contentDocument);
       },
 
    // command id="cmd_shelleyCommon" oncommand="Shelley.cmdJstop();" 
@@ -67,7 +68,6 @@ var Shelley = {
             Shelley.appendixStop(abrowser);
 
             abrowser.docShell.allowJavascript = false;
-            Shelley.update(null);
          }
          catch (e) {
             Components.utils.reportError(e)
@@ -78,7 +78,7 @@ var Shelley = {
    appendixStop: function(abrowser)
       {
          if(Shelley.seltabState.allowJavascript)
-//         if(!(abrowser.contentDocument.loadOverlay))
+   //    if(!(abrowser.contentDocument.loadOverlay))
          try {
             abrowser.webNavigation.stop(
                Components.interfaces.nsIWebNavigation.STOP_CONTENT);
@@ -86,7 +86,8 @@ var Shelley = {
          }
          catch (e) {
             Components.utils.reportError(e)
-         }      
+         }
+         Shelley._fireup(null)
       },
 
    // id="docShelley-allowall" menuitem's id="docShelley-disallow" 
@@ -100,13 +101,16 @@ var Shelley = {
 
    // when indicator is then refresh plus allowJavascript
    rescript: function(anevent)
-   {
-      if(gBrowser)
-      if(!(gBrowser.selectedBrowser.docShell.canExecuteScripts))
-         gBrowser.selectedBrowser.docShell.allowJavascript = true;
-   },
+      {
+         if(gBrowser)
+         if(!(gBrowser.selectedBrowser.docShell.canExecuteScripts))
+         {
+            gBrowser.selectedBrowser.docShell.allowJavascript = true;
+            Shelley._fireup(anevent);
+         }
+      },
 
-   _setRescript : function()
+   _setRescript : function() // initialize of return sub system
    {
       var theval = document.getElementById("docShelley-jstop");
       var thupdate = function(aname)
@@ -118,11 +122,7 @@ var Shelley = {
             else
                thelement.removeEventListener("command", Shelley.rescript, false);
       }
-
-      thupdate("Browser:Reload");
-      thupdate("Browser:ReloadOrDuplicate");
-      thupdate("Browser:ReloadSkipCache");
-
+      Shelley.refreshy.forEach(thupdate);
    },
    
    customizeDone : function(aToolboxChanged)
@@ -141,7 +141,7 @@ var Shelley = {
    
    _delayLoad : function()
    {
-      gBrowser.addEventListener("DOMContentLoaded", Shelley._fire, false);
+      gBrowser.addEventListener("DOMContentLoaded", Shelley._fireup, false);
       
       var navtoolbox = document.getElementById("navigator-toolbox");
       if(navtoolbox)
@@ -171,8 +171,8 @@ var Shelley = {
 
    // update cmd_shelleyCommon -> toolbar button
    // events:  "TabSelect",   "pageshow", "DOMContentLoaded".
-      gBrowser.tabContainer.addEventListener("TabSelect", Shelley._fire, false);
-      gBrowser.addEventListener("pageshow", Shelley._fire, false);
+      gBrowser.tabContainer.addEventListener("TabSelect", Shelley._fireup, false);
+      gBrowser.addEventListener("pageshow", Shelley._fireup, false);
       window.setTimeout(Shelley._delayLoad, 666);
 
    // depend on "extensions.frantshelley.allowPlugins" preference
@@ -203,15 +203,22 @@ var Shelley = {
       catch (e) {
          Components.utils.reportError(e)
       }      
+      },
+   // onpopuphiding of menupopup of menu id="docShelley-menu" 
+   popuphide: function()
+      {
+         Shelley.readyState.terminate();      
       }
+
    }  // var Shelley
 }  // guard
 
    // "statusbar" of menu subsystem
 Shelley.readyState = {
-   content : null,
-   element : null,
-   _value   : "loading", // status of newpage
+   content : null,   // document
+   element : null,   // menu
+   _value  : "Page Status: ", // prefix of stats label
+   starter : "loading",    // status of newpage
 
    initialize: function(acontent, amenu)
    {
@@ -220,30 +227,36 @@ Shelley.readyState = {
       if(amenu)
       {
 	 this.element = amenu;
+         this._value = amenu.value;
 	 acontent.addEventListener("unload", this);
       }
-      else this.update(null);
+         else this.update(null);
+   },
+
+   _setLabel : function(avalue)
+   {
+      this.element.label = this._value + avalue.quote();
    },
 
    update: function(avalue)
    {
-      if(avalue) this.element.label = this.element.value + avalue;
+      if(avalue) this._setLabel(avalue);
 
       avalue = this.content.readyState;
-	
+
       if(avalue === "complete")
       {
 	 this.content.removeEventListener("readystatechange", this);
 	 this.element.setAttribute("checked", "true");
-	 this.element.label = this.element.value + avalue;
+         this._setLabel(avalue);
       }
       else
 	 this.element.removeAttribute("checked");    
    },
-    
+
    handleEvent: function( evt )
    {
-      var thestate = this._value;
+      var thestate = this.starter;
       if(evt.type == "readystatechange")
       {
 	 thestate = this.content.readyState; // document.readyState;
@@ -258,9 +271,9 @@ Shelley.readyState = {
 	    function() {
 	       Shelley.readyState.initialize(this.content);
 	    }, 1 );
-//	this.content.addEventListener("readystatechange", this);
+   //	this.content.addEventListener("readystatechange", this);
       }
-      this.element.label = this.element.value + thestate;
+      this._setLabel(thestate);
    },
 
    terminate: function()
@@ -276,18 +289,9 @@ Shelley.readyState = {
    }
 }
 
-Shelley.popuphide = function()
-{
-   Shelley.update(null);
-   Shelley.readyState.terminate();
-}
-
-// menupopup onpopupshowing="Shelley.popupshow();" onpopuphiding="Shelley.popuphide();"
-
+   // onpopupshowing of menupopup of menu id="docShelley-menu" 
 Shelley.popupshow = function(abrowser)
 {
-   if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
-
    var thedocshell = abrowser.docShell;
    if(!thedocshell) return;
 
@@ -363,7 +367,7 @@ Shelley.popupshow = function(abrowser)
         Components.utils.reportError(e)
     }
 
-    return;
+   return;
 }
 
    // some handlers of "contentAreaContextMenu.popupshowing"
