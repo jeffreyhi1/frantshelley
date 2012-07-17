@@ -10,7 +10,7 @@ if ("undefined" == typeof(Shelley)) {
 var Shelley = {
       // context menu id per send issue
    sendy     : [ "context-sendimage", "context-sendlink", "context-sendpage" ],
-   refreshy : [ "Browser:Reload", "Browser:ReloadOrDuplicate", "Browser:ReloadSkipCache" ],
+   refreshy  : [ "Browser:Reload", "Browser:ReloadOrDuplicate", "Browser:ReloadSkipCache" ],
       // context menu id per nsIDocShell property
    item2shell: [ "docShelley-javascript", "docShelley-redirects", "docShelley-subframes", "docShelley-plugins" ],
    seltabState:
@@ -23,14 +23,23 @@ var Shelley = {
    timeout : null,   // update button timeout, window.clearTimeout.
 //	docShelley-jstop -> cmd_shelleyCommon
 
-   _fireup: function(anevent) // for Shelley.update
+   _fireup: function(anevt) // for Shelley.update
       {
-         if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
-
-         Shelley.timeout = window.setTimeout(Shelley._update, 333, anevent);
-/*    dump("_dvk_dbg_, fire type:\t"); dump(anevent.type); dump("\n")
-      if(anevent.currentTarget === anevent.target)
-      dump("_dvk_dbg_, currentTarget === anevent.target\n") */
+         // "command", "TabSelect", , null  
+         if(!(anevt.target) || !(anevt.target.defaultView))
+         {
+            if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
+            Shelley.timeout = window.setTimeout(Shelley._update, 333, anevt);
+   //    dump("_dvk_dbg_, fire type:\t"); dump(anevt.type); dump("\n")
+         }
+         else
+         if(gBrowser)   // "DOMContentLoaded", "pageshow"
+         if(anevt.target === gBrowser.selectedBrowser.contentDocument)
+         {
+            if(Shelley.timeout) window.clearTimeout(Shelley.timeout);
+            Shelley.timeout = window.setTimeout(Shelley._update, 333, anevt);
+   //    dump("_dvk_dbg_, target.defaultView:\t"); dump(anevt.type); dump("\n")
+         }
       },
 
    _update: function(aself) // charge above
@@ -87,7 +96,7 @@ var Shelley = {
          catch (e) {
             Components.utils.reportError(e)
          }
-         Shelley._fireup(null)
+         Shelley._fireup( { target : null } )
       },
 
    // id="docShelley-allowall" menuitem's id="docShelley-disallow" 
@@ -102,6 +111,7 @@ var Shelley = {
    // when indicator is then refresh plus allowJavascript
    rescript: function(anevent)
       {
+   //   dump("_dvk_dbg_, rescript.\n"); // one and more tabs ->
          if(gBrowser)
          if(!(gBrowser.selectedBrowser.docShell.canExecuteScripts))
          {
@@ -142,7 +152,7 @@ var Shelley = {
    _delayLoad : function()
    {
       gBrowser.addEventListener("DOMContentLoaded", Shelley._fireup, false);
-      
+
       var navtoolbox = document.getElementById("navigator-toolbox");
       if(navtoolbox)
       if(navtoolbox.customizeDone)
@@ -150,6 +160,19 @@ var Shelley = {
          shelleyBrowserToolboxCustomizeDone = navtoolbox.customizeDone;
          navtoolbox.customizeDone = Shelley.customizeDone;
       }
+
+      // when occurs hot restart, and the button is disabled
+      var thewintop = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+               .getInterface(Components.interfaces.nsIWebNavigation)
+               .QueryInterface(Components.interfaces.nsIDocShell);
+
+      if(thewintop)
+      if(thewintop.canExecuteScripts)
+      if(gBrowser.browsers.length >> 1) Shelley._setRescript()
+         else
+            if(!(gBrowser.selectedBrowser.docShell.canExecuteScripts))
+                  Shelley._setRescript();
+
    },
    
    initialize: function(anallow)
@@ -305,7 +328,7 @@ Shelley.popupshow = function(abrowser)
         var thewintop = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                     .getInterface(Components.interfaces.nsIWebNavigation)
                     .QueryInterface(Components.interfaces.nsIDocShell);
-//    dump("_dvk_dbg_, top window:\t"); dump(gBrowser.selectedBrowser.docShell); dump("\n\n");
+//    dump("_dvk_dbg_, top window:\t"); dump(gBrowser.selectedBrowser.docShell);
 	if(!thewintop) thewintop = thedocshell;
 
 	var thyes = 4;
@@ -334,7 +357,7 @@ Shelley.popupshow = function(abrowser)
 		--theno; // if disabled then exclude both:
 		if(thecheck) --thyes;
 	    }
-//	    let thestr = "gBrowser.selectedBrowser.docShell[this.value] = " + (!thecheck) + ";";
+//    let thestr = "gBrowser.selectedBrowser.docShell[this.value] = " + (!thecheck) + ";";
 //	    thelement.setAttribute("oncommand", thestr);
 	}
 //	dump("_dvk_dbg_, .nsIDocShell:\t"); dump(thedocshell[thattr]); dump("\n");
@@ -511,8 +534,6 @@ Shelley.main = {   // var frantShelley = {
       } catch (e) {
         Components.utils.reportError(e)
       }
-
-//         dump("_dvk_dbg_, subject:\t"); dump(asubject); dump("\n");
       return;
   },
 

@@ -5,7 +5,7 @@
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-<script src="chrome://frantshelley/content/frantshelley.js" type="application/x-javascript" />
+<script src="chrome://frantshelley/content/frantshelley.js" type="application/javascript" />
 
   <menupopup id="contentAreaContextMenu" >
         <menuitem id="context-removeimage" label="&eraseImage.label;" hidden="true"
