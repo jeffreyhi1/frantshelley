@@ -407,8 +407,11 @@ Shelley.pref2fire = {   // depend on : document, gContextMenu
    },
 
    'hideSenditem' : function (e) { // ..frantshelley.hideSenditem
-      for each (let theval in Shelley.sendy)
-          document.getElementById(theval).setAttribute("hidden", "true");
+      for each (let thename in Shelley.sendy)
+      {
+         let thitem = document.getElementById(thename);
+         if(thitem) thitem.setAttribute("hidden", "true");
+      }
    }
 }
 // depend on : document, gContextMenu
@@ -461,7 +464,7 @@ Shelley.main = {   // var frantShelley = {
 
   startup: function() // Initialize the extension
   {   
-//      dump("_dvk_dbg_, startup frant shelly.\n");
+//    dump("_dvk_dbg_, startup frant shelly.\n");
 //      Services.prefs.addObserver(pref_BlockRefresh, this, false);
       this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2);
    // this[theval] = this._branch.getBoolPref(theval);
